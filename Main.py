@@ -14,5 +14,12 @@ print(df.columns)
 
 df.drop(["Id", "ProductId", "UserId", "ProfileName"], axis=1, inplace = True)
 df.dropna(inplace=True)
+df.drop_duplicates(inplace = True)
 
 new_bdd = df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
+
+
+#%%
+print(df)
+print(df.describe())
+df.info()
