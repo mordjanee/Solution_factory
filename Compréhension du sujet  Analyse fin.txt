@@ -1,0 +1,4 @@
+Compréhension du sujet : Analyse fine d'avis
+
+Le but du sujet est de créer un ystème qui permet d'analyser plus profondement les avis clients à propos d'un service ou d'un bien.
+Ce dernier doit être capable d'analyser du texte afin d'en extraire les informations importantes et les sentiments des utilisateurs pour que les prestataires puissent mieux comprendre l'avis global de leur produit. Cette compréhension doit donc permettre aux prestataires de mettre au point une améliration du produit ou service vendu.
