@@ -55,7 +55,7 @@ disappointment_list = ['disappointment', 'frustration', 'letdown', 'despair', 'r
                        'grieved', 'disenchanted', 'dissatisfying', 'unexciting', 'uninspiring',
                        'depressing', 'dispiriting', 'disillusioning', 'discouraging',
                        'aggravating', 'exasperating', 'maddening', 'vexing', 'challenging',
-                       'saddening', 'error', 'mess']
+                       'saddening', 'error', 'mess','deceptive']
 
 
 sadness_list = ['sadness', 'grief', 'sorrow', 'heartache', 'melancholy', 'despair', 'depression',
@@ -232,6 +232,38 @@ for index, row in df.iterrows():
         df.loc[index, "Anger_pourcentage"] = row["Anger_pourcentage"] / row["sum_pourcentage"] * 100
         df.loc[index, "Surprise_pourcentage"] = row["Surprise_pourcentage"] / row["sum_pourcentage"] * 100
 
+df.drop[df[df["sum_pourcentage"] == 0].index]
+
+count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pourcentage"].fillna(0) == 0) &
+              (df["Sadness_pourcentage"].fillna(0) == 0) & (df["Anger_pourcentage"].fillna(0) == 0) &
+              (df["Surprise_pourcentage"].fillna(0) == 0)])
+
+print(count)
+print(len(df))
 
 new_bdd = df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
+
+
+#%%
+
+from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import v_measure_score
+
+
+X = df[["Encoding_joy", "Encoding_disappointment", "Encoding_sadness", "Encoding_anger", "Encoding_surprise", "Summary_encoding_joy", "Summary_encoding_disappointment", "Summary_encoding_sadness", "Summary_encoding_anger", "Summary_encoding_surprise"]]
+y = df[["Joy_pourcentage", "Disappointment_pourcentage", "Sadness_pourcentage", "Anger_pourcentage", "Surprise_pourcentage"]]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=33)
+k_means = KMeans(n_clusters=5, random_state=0)
+
+k_means.fit(X_train, y_train)
+y_pred = k_means.predict(X_test)
+mesure = v_measure_score(y_test, y_pred)
+print("Mesure : ", mesure)
+
+
+
+
 
