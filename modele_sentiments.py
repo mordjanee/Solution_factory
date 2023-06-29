@@ -162,29 +162,32 @@ df["Summary"] = df["Summary"].str.replace("[^\w\s]", "")
 
 df["Summary"] = df["Summary"].str.lower()
 
+df["Text"] = df["Text"] + " " + df["Summary"]
 
-def contain(word, liste):
-    for i in liste :
+def contain(word, sentence):
+    for i in sentence.split() :
         if i == word :
             return True
     return False
 
 def encoding(sentence, liste):
     lst = []
-    for i in sentence.split() :
-        if (contain(i, liste)):
+    for i in liste :
+        if (contain(i, sentence)):
             lst.append(1)
         else :
             lst.append(0)
     return lst
 
-def pourcent_sentiment(encoding):
+def pourcent_sentiment(encoding) :
     cpt = 0
     for i in encoding :
         if i == 1 :
             cpt += 1
     if len(encoding)!=0:
         return (cpt / len(encoding)) * 100
+    
+
         
             
 df["Encoding_joy"] = df["Text"].apply(lambda x: encoding(x, joy_list))
@@ -194,19 +197,12 @@ df["Encoding_anger"] = df["Text"].apply(lambda x: encoding(x, anger_list))
 df["Encoding_surprise"] = df["Text"].apply(lambda x: encoding(x, surprise_list))
 
 
-df["Summary_encoding_joy"] = df["Summary"].apply(lambda x: encoding(x, joy_list))
-df["Summary_encoding_disappointment"] = df["Summary"].apply(lambda x: encoding(x, disappointment_list))
-df["Summary_encoding_sadness"] = df["Summary"].apply(lambda x: encoding(x, sadness_list))
-df["Summary_encoding_anger"] = df["Summary"].apply(lambda x: encoding(x, anger_list))
-df["Summary_encoding_surprise"] = df["Summary"].apply(lambda x: encoding(x, surprise_list))
-
-
 #%%
-df["Joy_pourcentage"] = (df["Encoding_joy"].apply(pourcent_sentiment) + df["Summary_encoding_joy"].apply(pourcent_sentiment)) / 2
-df["Disappointment_pourcentage"] = (df["Encoding_disappointment"].apply(pourcent_sentiment) + df["Summary_encoding_disappointment"].apply(pourcent_sentiment)) / 2
-df["Sadness_pourcentage"] = (df["Encoding_sadness"].apply(pourcent_sentiment) + df["Summary_encoding_sadness"].apply(pourcent_sentiment)) / 2
-df["Anger_pourcentage"] = (df["Encoding_anger"].apply(pourcent_sentiment) + df["Summary_encoding_anger"].apply(pourcent_sentiment)) / 2
-df["Surprise_pourcentage"] = (df["Encoding_surprise"].apply(pourcent_sentiment) + df["Summary_encoding_surprise"].apply(pourcent_sentiment)) / 2
+df["Joy_pourcentage"] = df["Encoding_joy"].apply(pourcent_sentiment)
+df["Disappointment_pourcentage"] = df["Encoding_disappointment"].apply(pourcent_sentiment)
+df["Sadness_pourcentage"] = df["Encoding_sadness"].apply(pourcent_sentiment)
+df["Anger_pourcentage"] = df["Encoding_anger"].apply(pourcent_sentiment)
+df["Surprise_pourcentage"] = df["Encoding_surprise"].apply(pourcent_sentiment)
 
 
 print(df.loc[2, "Encoding_joy"])
@@ -224,15 +220,8 @@ print(len(df))
 
 df["sum_pourcentage"] = df["Joy_pourcentage"] + df["Disappointment_pourcentage"] + df["Sadness_pourcentage"] + df["Anger_pourcentage"] + df["Surprise_pourcentage"]
 
-for index, row in df.iterrows():
-    if row["sum_pourcentage"] != 0:
-        df.loc[index, "Joy_pourcentage"] = row["Joy_pourcentage"] / row["sum_pourcentage"] * 100
-        df.loc[index, "Disappointment_pourcentage"] = row["Disappointment_pourcentage"] / row["sum_pourcentage"] * 100
-        df.loc[index, "Sadness_pourcentage"] = row["Sadness_pourcentage"] / row["sum_pourcentage"] * 100
-        df.loc[index, "Anger_pourcentage"] = row["Anger_pourcentage"] / row["sum_pourcentage"] * 100
-        df.loc[index, "Surprise_pourcentage"] = row["Surprise_pourcentage"] / row["sum_pourcentage"] * 100
 
-df.drop[df[df["sum_pourcentage"] == 0].index]
+df.drop(df[df["sum_pourcentage"] == 0].index, inplace = True)
 
 count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pourcentage"].fillna(0) == 0) &
               (df["Sadness_pourcentage"].fillna(0) == 0) & (df["Anger_pourcentage"].fillna(0) == 0) &
@@ -241,29 +230,106 @@ count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pour
 print(count)
 print(len(df))
 
-new_bdd = df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
-
+df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
 
 #%%
 
-from sklearn.cluster import KMeans
+type(df["Encoding_joy"])
+
+#%%
+
+
+import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
-from sklearn.metrics import v_measure_score
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 
 
-X = df[["Encoding_joy", "Encoding_disappointment", "Encoding_sadness", "Encoding_anger", "Encoding_surprise", "Summary_encoding_joy", "Summary_encoding_disappointment", "Summary_encoding_sadness", "Summary_encoding_anger", "Summary_encoding_surprise"]]
-y = df[["Joy_pourcentage", "Disappointment_pourcentage", "Sadness_pourcentage", "Anger_pourcentage", "Surprise_pourcentage"]]
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=33)
-k_means = KMeans(n_clusters=5, random_state=0)
-
-k_means.fit(X_train, y_train)
-y_pred = k_means.predict(X_test)
-mesure = v_measure_score(y_test, y_pred)
-print("Mesure : ", mesure)
+lr_joy = LinearRegression()
+X = df["Encoding_joy"].tolist()
+y = df["Joy_pourcentage"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+lr_joy.fit(X_train, y_train)
+y_pred = lr_joy.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R2 Score modèle joie:", r2)
 
 
+lr_disappointment = LinearRegression()
+X = df["Encoding_disappointment"].tolist()
+y = df["Disappointment_pourcentage"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+lr_disappointment.fit(X_train, y_train)
+y_pred = lr_disappointment.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R2 Score modèle déception:", r2)
 
 
+lr_sadness = LinearRegression()
+X = df["Encoding_sadness"].tolist()
+y = df["Sadness_pourcentage"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+lr_sadness.fit(X_train, y_train)
+y_pred = lr_sadness.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R2 Score modèle tristesse:", r2)
+
+
+lr_anger = LinearRegression()
+X = df["Encoding_anger"].tolist()
+y = df["Anger_pourcentage"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+lr_anger.fit(X_train, y_train)
+y_pred = lr_anger.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R2 Score modèle colère:", r2)
+
+
+lr_surprise = LinearRegression()
+X = df["Encoding_surprise"].tolist()
+y = df["Surprise_pourcentage"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+lr_surprise.fit(X_train, y_train)
+y_pred = lr_surprise.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R2 Score modèle surprise:", r2)
+
+#%%
+
+def pourcentage_final(joy, disappointment, sadness, anger, surprise) :
+    total = joy + disappointment + sadness + anger + surprise
+    joy = joy / total * 100
+    disappointment = disappointment / total * 100
+    sadness = sadness / total * 100
+    anger = anger / total * 100
+    surprise = surprise / total * 100
+    print("Pourcentage de joie : ", joy, "\nPourcentage de déception : ", disappointment,
+          "\nPourcentage de tristesse : ", sadness, "\nPourcentage de colère : ", anger, 
+          "\nPourcentage de surprise : ", surprise)
+    
+
+def traitement_donnee(texte, liste_sentiment) : 
+    texte.replace("[^\w\s]", "")
+    enc = encoding(texte, liste_sentiment)
+    return enc
+
+test = "good quality dog food i have bought several of the vitality canned dog food products and have found them all to be of good quality the product looks more like a stew than a processed meat and it smells better my labrador is finicky and she appreciates this product better than  most good quality dog food"
+prediction_joy = lr_joy.predict([traitement_donnee(test, joy_list)])
+prediction_disappointment = lr_disappointment.predict([traitement_donnee(test, disappointment_list)])
+prediction_sadness = lr_sadness.predict([traitement_donnee(test, sadness_list)])
+prediction_anger = lr_anger.predict([traitement_donnee(test, anger_list)])
+prediction_surprise = lr_surprise.predict([traitement_donnee(test, surprise_list)])
+
+print("Joie : ", prediction_joy)
+print("Déception : ", prediction_disappointment)
+print("Tristesse : ", prediction_sadness)
+print("Colère : ", prediction_anger)
+print("Surprise : ", prediction_surprise)
+
+pourcentage_final(prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise)
+
+    
+    
 
