@@ -157,12 +157,13 @@ df["Text"] = df["Text"].str.replace(".", "")
 df["Text"] = df["Text"].str.replace("[^\w\s]", "")
 
 df["Text"] = df["Text"].str.lower()
-
 df["Summary"] = df["Summary"].str.replace("[^\w\s]", "")
-
 df["Summary"] = df["Summary"].str.lower()
 
+#Concaténation du Summary et du Text
 df["Text"] = df["Text"] + " " + df["Summary"]
+
+#Fonctions qui encodent le texte
 
 def contain(word, sentence):
     for i in sentence.split() :
@@ -179,7 +180,8 @@ def encoding(sentence, liste):
             lst.append(0)
     return lst
 
-def pourcent_sentiment(encoding) :
+
+def pourcent_sentiment(encoding) :   #Pourcentage du sentiment dans l'encodage en comptant les 1
     cpt = 0
     for i in encoding :
         if i == 1 :
@@ -188,8 +190,7 @@ def pourcent_sentiment(encoding) :
         return (cpt / len(encoding)) * 100
     
 
-        
-            
+#Application de l'encodage et création de colonnes pour chaque sentiments
 df["Encoding_joy"] = df["Text"].apply(lambda x: encoding(x, joy_list))
 df["Encoding_disappointment"] = df["Text"].apply(lambda x: encoding(x, disappointment_list))
 df["Encoding_sadness"] = df["Text"].apply(lambda x: encoding(x, sadness_list))
@@ -197,7 +198,7 @@ df["Encoding_anger"] = df["Text"].apply(lambda x: encoding(x, anger_list))
 df["Encoding_surprise"] = df["Text"].apply(lambda x: encoding(x, surprise_list))
 
 
-#%%
+#Application du pourcentage et création de colonnes pour chaque sentiments
 df["Joy_pourcentage"] = df["Encoding_joy"].apply(pourcent_sentiment)
 df["Disappointment_pourcentage"] = df["Encoding_disappointment"].apply(pourcent_sentiment)
 df["Sadness_pourcentage"] = df["Encoding_sadness"].apply(pourcent_sentiment)
@@ -208,8 +209,8 @@ df["Surprise_pourcentage"] = df["Encoding_surprise"].apply(pourcent_sentiment)
 print(df.loc[2, "Encoding_joy"])
 print(df.loc[2, "Joy_pourcentage"])
 
-#%%
 
+#Compter le nombre de ligne où aucun sentiment n'a été identifié
 count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pourcentage"].fillna(0) == 0) &
               (df["Sadness_pourcentage"].fillna(0) == 0) & (df["Anger_pourcentage"].fillna(0) == 0) &
               (df["Surprise_pourcentage"].fillna(0) == 0)])
@@ -217,12 +218,13 @@ count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pour
 print(count)
 print(len(df))
 
-
+#Créer une colonne avec la somme des pourcentages
 df["sum_pourcentage"] = df["Joy_pourcentage"] + df["Disappointment_pourcentage"] + df["Sadness_pourcentage"] + df["Anger_pourcentage"] + df["Surprise_pourcentage"]
 
-
+#Supprimer les lignes sans sentiment
 df.drop(df[df["sum_pourcentage"] == 0].index, inplace = True)
 
+#Vérifier qu'il n'y a plus de ligne sans sentiment
 count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pourcentage"].fillna(0) == 0) &
               (df["Sadness_pourcentage"].fillna(0) == 0) & (df["Anger_pourcentage"].fillna(0) == 0) &
               (df["Surprise_pourcentage"].fillna(0) == 0)])
@@ -230,13 +232,14 @@ count = len(df[(df["Joy_pourcentage"].fillna(0) == 0) & (df["Disappointment_pour
 print(count)
 print(len(df))
 
+#Création de la nouvelle base de données
 df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
 
 #%%
 
 type(df["Encoding_joy"])
 
-#%%
+#%% Création des modèle de machine learning (régression linéaire)
 
 
 import pandas as pd
@@ -298,7 +301,13 @@ print("R2 Score modèle surprise:", r2)
 
 #%%
 
-def pourcentage_final(joy, disappointment, sadness, anger, surprise) :
+def traitement_donnee(texte, liste_sentiment) : #Fonction qui encode un texte en fonction de la liste de sentiment sélectionnée
+    texte.replace("[^\w\s]", "")
+    texte.lower()
+    enc = encoding(texte, liste_sentiment)
+    return enc
+
+def pourcentage_final(joy, disappointment, sadness, anger, surprise) :  #Fonction qui calcul le pourcentage de chaque émotion en fonction du total de pourcentage
     total = joy + disappointment + sadness + anger + surprise
     joy = joy / total * 100
     disappointment = disappointment / total * 100
@@ -308,13 +317,9 @@ def pourcentage_final(joy, disappointment, sadness, anger, surprise) :
     print("Pourcentage de joie : ", joy, "\nPourcentage de déception : ", disappointment,
           "\nPourcentage de tristesse : ", sadness, "\nPourcentage de colère : ", anger, 
           "\nPourcentage de surprise : ", surprise)
-    
 
-def traitement_donnee(texte, liste_sentiment) : 
-    texte.replace("[^\w\s]", "")
-    enc = encoding(texte, liste_sentiment)
-    return enc
 
+#Test
 test = "good quality dog food i have bought several of the vitality canned dog food products and have found them all to be of good quality the product looks more like a stew than a processed meat and it smells better my labrador is finicky and she appreciates this product better than  most good quality dog food"
 prediction_joy = lr_joy.predict([traitement_donnee(test, joy_list)])
 prediction_disappointment = lr_disappointment.predict([traitement_donnee(test, disappointment_list)])
