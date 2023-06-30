@@ -24,6 +24,8 @@ df.dropna(inplace=True)
 df.drop_duplicates(inplace = True)
 
 df["Text"] = df["Text"].str.replace("[^\w\s]", "")
+df["Text"] = df["Text"].str.lower()
+df["Text"] = df["Text"] + " " + df["Summary"]
 
 
 #%%
@@ -47,7 +49,7 @@ from sklearn.metrics import accuracy_score
 
 sentences_text = "".join(df["Text"].str.lower())
 mots = sentences_text.split()
-mots_frequents = Counter(mots).most_common(10000)
+mots_frequents = Counter(mots).most_common(5000)
 
 dictionnaire = {indice : mot for indice, (mot, _) in enumerate(mots_frequents)}
 liste = [mot for mot,_ in mots_frequents]
@@ -115,8 +117,10 @@ dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le che
 with open(os.path.join(dossier, "knn_sauvegarde.pkl"), "wb") as fichier:
     pickle.dump(knn, fichier)
     
-    
+#%%
 
+with open(os.path.join(dossier, "SVC_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(svc, fichier)
 
 
 
