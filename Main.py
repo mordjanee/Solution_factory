@@ -102,14 +102,14 @@ print("SVC accuracy:", accuracy)
 #%% Sauvegarde du modèle
 
 import pickle
+import os
 
-# Sauvegarde du modèle
-with open('D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\modele_knn_sauvegarde.pkl', 'wb') as fichier:
+#Créer un dossier Modeles dans le fichier ou se trouve le python AVANT
+
+dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le chemin du dossier actuel
+
+with open(os.path.join(dossier, "knn_sauvegarde.pkl"), "wb") as fichier:
     pickle.dump(knn, fichier)
-
-# Chargement du modèle
-with open('D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\modele_knn_sauvegarde.pkl', 'rb') as fichier:
-    knn_sauvegarde = pickle.load(fichier)
     
     
 

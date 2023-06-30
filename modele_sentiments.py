@@ -131,7 +131,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-df = pd.read_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_Amazon.csv", delimiter=";", on_bad_lines= "skip")
+import os
+
+dossier = os.path.dirname(__file__)
+
+df = pd.read_csv(os.path.join(dossier, "BDD_Amazon.csv"), delimiter=";", on_bad_lines= "skip")
 df.drop(df.columns[list(range(10,17))], axis = 1, inplace = True)
 
 print(df.columns)
@@ -233,7 +237,7 @@ print(count)
 print(len(df))
 
 #Création de la nouvelle base de données
-df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
+df.to_csv(os.path.join(dossier, "BDD_New.csv"), index = False,sep=";", header = True)
 
 #%%
 
@@ -309,11 +313,18 @@ def traitement_donnee(texte, liste_sentiment) : #Fonction qui encode un texte en
 
 def pourcentage_final(joy, disappointment, sadness, anger, surprise) :  #Fonction qui calcul le pourcentage de chaque émotion en fonction du total de pourcentage
     total = joy + disappointment + sadness + anger + surprise
-    joy = joy / total * 100
-    disappointment = disappointment / total * 100
-    sadness = sadness / total * 100
-    anger = anger / total * 100
-    surprise = surprise / total * 100
+    joy = float(joy[0]) / total * 100
+    disappointment = float(disappointment[0]) / total * 100
+    sadness = float(sadness[0]) / total * 100
+    anger = float(anger[0]) / total * 100
+    surprise = float(surprise[0]) / total * 100
+    
+    joy = abs(round(joy[0], 2))
+    disappointment = abs(round(disappointment[0], 2))
+    sadness = abs(round(sadness[0], 2))
+    anger = abs(round(anger[0], 2))
+    surprise = abs(round(surprise[0], 2))
+    
     print("Pourcentage de joie : ", joy, "\nPourcentage de déception : ", disappointment,
           "\nPourcentage de tristesse : ", sadness, "\nPourcentage de colère : ", anger, 
           "\nPourcentage de surprise : ", surprise)
@@ -335,6 +346,52 @@ print("Surprise : ", prediction_surprise)
 
 pourcentage_final(prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise)
 
+
+#%%# Sauvegarde des modèles
+
+import pickle
+import os
+
+#Créer un dossier Modeles dans le fichier ou se trouve le python AVANT
+
+dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le chemin du dossier actuel
+
+with open(os.path.join(dossier, "lr_joy_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(lr_joy, fichier)
     
+with open(os.path.join(dossier, "lr_disappointment_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(lr_disappointment, fichier)
+    
+with open(os.path.join(dossier, "lr_sadness_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(lr_sadness, fichier)
+
+with open(os.path.join(dossier, "lr_anger_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(lr_anger, fichier)
+    
+with open(os.path.join(dossier, "lr_surprise_sauvegarde.pkl"), "wb") as fichier:
+    pickle.dump(lr_surprise, fichier)
+    
+    
+    
+#%% Enregistrer les listes de mots dans des fichiers
+
+#Créer un dossier Listes dans le fichier ou se trouve le python AVANT
+
+dossier = os.path.join(os.path.dirname(__file__), "Listes")
+
+with open(os.path.join(dossier, "Joy_list.pkl"), "wb") as fichier:
+    pickle.dump(joy_list, fichier)
+    
+with open(os.path.join(dossier, 'Disappointment_list.pkl'), "wb") as fichier:
+    pickle.dump(disappointment_list, fichier)
+    
+with open(os.path.join(dossier, 'Sadness_list.pkl'), "wb") as fichier:
+    pickle.dump(sadness_list, fichier)
+    
+with open(os.path.join(dossier, 'Anger_list.pkl'), "wb") as fichier:
+    pickle.dump(anger_list, fichier)
+    
+with open(os.path.join(dossier, 'Surprise_list.pkl'), "wb") as fichier:
+    pickle.dump(surprise_list, fichier)
     
 

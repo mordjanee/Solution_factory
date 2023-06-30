@@ -38,11 +38,11 @@ def pourcentage_final(joy, disappointment, sadness, anger, surprise) :  #Fonctio
     anger = float(anger[0]) / total * 100
     surprise = float(surprise[0]) / total * 100
     
-    joy = round(joy[0], 2)
-    disappointment = round(disappointment[0], 2)
-    sadness = round(sadness[0], 2)
-    anger = round(anger[0], 2)
-    surprise = round(surprise[0], 2)
+    joy = abs(round(joy[0], 2))
+    disappointment = abs(round(disappointment[0], 2))
+    sadness = abs(round(sadness[0], 2))
+    anger = abs(round(anger[0], 2))
+    surprise = abs(round(surprise[0], 2))
     
     print("Pourcentage de joie : ", joy, "\nPourcentage de déception : ", disappointment,
           "\nPourcentage de tristesse : ", sadness, "\nPourcentage de colère : ", anger, 
@@ -91,8 +91,11 @@ with open(os.path.join(dossier, "lr_surprise_sauvegarde.pkl"), "rb") as fichier:
 #%% Création de l'application de test
 
 import tkinter as tk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 fenetre = tk.Tk()
+fenetre.title("Application des sentiments")
 fenetre.geometry("400x300")
 
 zone_texte = tk.Entry(fenetre)
@@ -107,15 +110,32 @@ def fonction_test(test) :
     prediction_surprise = lr_surprise.predict([traitement_donnee(test, surprise_list)])
     
     pourcentage_final(prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise)
+    return abs(prediction_joy[0]), abs(prediction_disappointment[0]), abs(prediction_sadness[0]), abs(prediction_anger[0]), abs(prediction_surprise[0])
     
     
-def recuperer_texte():
+def recuperer_texte():  #Fonction qui se lance quand le bouton est cliqué
     texte = zone_texte.get()
     print(texte)
-    fonction_test(texte)
+    prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise = fonction_test(texte)
+
+    categories = ['Joy', 'Disappointment', 'Sadness', 'Anger', 'Surprise']
+    pourcentages = [prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise]
+    
+    #Création de la figure
+    figure = plt.figure(figsize=(4, 4))
+    graphique = figure.add_subplot(111)
+    graphique.pie(pourcentages, labels=categories, autopct='%1.1f%%')
+
+    # Création du canevas Tkinter pour afficher le graphique
+    canvas = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
+
     
 bouton = tk.Button(fenetre, text="Récupérer le texte", command=recuperer_texte)
 bouton.pack()
+
+
 
 fenetre.mainloop()
 
