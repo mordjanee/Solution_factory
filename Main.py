@@ -19,7 +19,7 @@ df.drop(["Id", "ProductId", "UserId", "ProfileName"], axis=1, inplace = True)
 df.dropna(inplace=True)
 df.drop_duplicates(inplace = True)
 
-new_bdd = df.to_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_New.csv", index = False,sep=";", header = True)
+df["Text"] = df["Text"].str.replace("[^\w\s]", "")
 
 
 #%%
@@ -43,7 +43,7 @@ from sklearn.metrics import accuracy_score
 
 sentences_text = "".join(df["Text"].str.lower())
 mots = sentences_text.split()
-mots_frequents = Counter(mots).most_common(2000)
+mots_frequents = Counter(mots).most_common(10000)
 
 dictionnaire = {indice : mot for indice, (mot, _) in enumerate(mots_frequents)}
 liste = [mot for mot,_ in mots_frequents]
