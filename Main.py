@@ -9,8 +9,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import pickle
+import os
 
-df = pd.read_csv("D:\Efrei_cours\Semestre_6\Mastercamp\Atelier_Data_Science\Solution_factory\BDD_Amazon.csv", delimiter=";", on_bad_lines= "skip")
+dossier = os.path.dirname(__file__)
+
+df = pd.read_csv(os.path.join(dossier, "BDD_Amazon.csv"), delimiter=";", on_bad_lines= "skip")
 df.drop(df.columns[list(range(10,17))], axis = 1, inplace = True)
 
 print(df.columns)
