@@ -70,6 +70,7 @@ def encoding(sentence, liste):
             lst.append(0)
     return lst
 
+#%%
             
 df["Encoding"] = df["Text"].apply(lambda x: encoding(x, liste))
 
@@ -107,9 +108,6 @@ print("SVC accuracy:", accuracy)
 
 #%% Sauvegarde du modèle
 
-import pickle
-import os
-
 #Créer un dossier Modeles dans le fichier ou se trouve le python AVANT
 
 dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le chemin du dossier actuel
@@ -117,10 +115,17 @@ dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le che
 with open(os.path.join(dossier, "knn_sauvegarde.pkl"), "wb") as fichier:
     pickle.dump(knn, fichier)
     
-#%%
+#%%Sauvegarde du modèle SVC
 
 with open(os.path.join(dossier, "SVC_sauvegarde.pkl"), "wb") as fichier:
     pickle.dump(svc, fichier)
+    
+#%%
+
+dossier = os.path.join(os.path.dirname(__file__), "Listes")
+
+with open(os.path.join(dossier, "liste_5000.pkl"), "wb") as fichier:
+    pickle.dump(liste, fichier)
 
 
 

@@ -69,6 +69,9 @@ with open(os.path.join(dossier, "Anger_list.pkl"), "rb") as fichier:
 with open(os.path.join(dossier, "Surprise_list.pkl"), "rb") as fichier:
     surprise_list = pickle.load(fichier)
     
+with open(os.path.join(dossier, "liste_5000.pkl"), "rb") as fichier:
+    liste_5000 = pickle.load(fichier)
+    
     
 dossier = os.path.join(os.path.dirname(__file__), "Modeles") #Récupérer le chemin du dossier actuel
 
@@ -87,16 +90,19 @@ with open(os.path.join(dossier, "lr_anger_sauvegarde.pkl"), "rb") as fichier:
 with open(os.path.join(dossier, "lr_surprise_sauvegarde.pkl"), "rb") as fichier:
     lr_surprise = pickle.load(fichier)
     
+with open(os.path.join(dossier, "SVC_sauvegarde.pkl"), "rb") as fichier:
+    svc = pickle.load(fichier)
     
 #%% Création de l'application de test
 
 import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
 
 fenetre = tk.Tk()
 fenetre.title("Application des sentiments")
-fenetre.geometry("400x300")
+fenetre.geometry("500x400")
 
 zone_texte = tk.Entry(fenetre)
 zone_texte.pack()
@@ -130,10 +136,18 @@ def recuperer_texte():  #Fonction qui se lance quand le bouton est cliqué
     canvas = FigureCanvasTkAgg(figure, master=fenetre)
     canvas.draw()
     canvas.get_tk_widget().pack()
+    
+    resultat_svc = svc.predict([encoding(texte, liste_5000)])[0]
+    print(type(resultat_svc))
+    etoiles = "Nombre d'étoiles prédit : " + str(resultat_svc)
+    label = tk.Label(text = etoiles)
+    label.pack()
+    
 
     
-bouton = tk.Button(fenetre, text="Récupérer le texte", command=recuperer_texte)
+bouton = tk.Button(fenetre, text="Analyser le texte", command=recuperer_texte)
 bouton.pack()
+
 
 
 
