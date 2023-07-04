@@ -227,11 +227,12 @@ def button_db():
         
         categories = ['Joy', 'Disappointment', 'Sadness', 'Anger', 'Surprise']
         pourcentages = [average_joy, average_disappointment, average_sadness, average_anger, average_surprise]
+        colors = ['#FFD700', '#808080', '#9370DB', '#FF0000', '#00FFFF']
         
         #Création de la figure
         figure = plt.figure(figsize=(4, 4))
         graphique = figure.add_subplot(111)
-        graphique.pie(pourcentages, labels=categories, autopct='%1.1f%%')
+        graphique.pie(pourcentages, labels=categories, autopct='%1.1f%%', colors=colors)
         graphique.set_title('Graphique des pourcentages de chaque sentiment')
 
         # Création du canevas Tkinter pour afficher le graphique
@@ -243,7 +244,7 @@ def button_db():
         # Création de la figure n°2
         figure2 = plt.figure(figsize=(4, 4))
         graphique2 = figure2.add_subplot(111)
-        graphique2.bar(categories, pourcentages)
+        graphique2.bar(categories, pourcentages, color=colors)
         
         # Personnalisation des axes et du titre si nécessaire
         graphique2.set_xlabel('Catégories')
@@ -338,15 +339,19 @@ def button_db():
             
             btn_wordcloud_disappointment = tk.Button(fenetre, text = "Wordcloud disappointment", command = wordcloud_disappointment)
             btn_wordcloud_disappointment.pack()
+            btn_wordcloud_disappointment.configure(bg='#D3D3D3')
             
             btn_wordcloud_sadness = tk.Button(fenetre, text = "Wordcloud sadness", command = wordcloud_sadness)
             btn_wordcloud_sadness.pack()
+            btn_wordcloud_sadness.configure(bg='#800080')
             
             btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
             btn_wordcloud_anger.pack()
+            btn_wordcloud_anger.configure(bg='#FF0000')
             
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
+            btn_wordcloud_surprise.configure(bg='#40E0D0')
             
         def wordcloud_disappointment():
             
@@ -365,15 +370,19 @@ def button_db():
             
             btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
             btn_wordcloud_joy.pack()
+            btn_wordcloud_joy.configure(bg='#FFFF00')
             
             btn_wordcloud_sadness = tk.Button(fenetre, text = "Wordcloud sadness", command = wordcloud_sadness)
             btn_wordcloud_sadness.pack()
+            btn_wordcloud_sadness.configure(bg='#800080')
             
             btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
             btn_wordcloud_anger.pack()
+            btn_wordcloud_anger.configure(bg='#FF0000')
             
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
+            btn_wordcloud_surprise.configure(bg='#40E0D0')
         
         
         
@@ -394,15 +403,19 @@ def button_db():
             
             btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
             btn_wordcloud_joy.pack()
+            btn_wordcloud_joy.configure(bg='#FFFF00')
             
             btn_wordcloud_disappointment = tk.Button(fenetre, text = "Wordcloud disappointment", command = wordcloud_disappointment)
             btn_wordcloud_disappointment.pack()
+            btn_wordcloud_disappointment.configure(bg='#D3D3D3')
             
             btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
             btn_wordcloud_anger.pack()
+            btn_wordcloud_anger.configure(bg='#FF0000')
             
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
+            btn_wordcloud_surprise.configure(bg='#40E0D0')
         
         
         def wordcloud_anger():
@@ -422,15 +435,19 @@ def button_db():
             
             btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
             btn_wordcloud_joy.pack()
+            btn_wordcloud_joy.configure(bg='#FFFF00')
             
             btn_wordcloud_disappointment = tk.Button(fenetre, text = "Wordcloud disappointment", command = wordcloud_disappointment)
             btn_wordcloud_disappointment.pack()
+            btn_wordcloud_disappointment.configure(bg='#D3D3D3')
             
             btn_wordcloud_sadness = tk.Button(fenetre, text = "Wordcloud sadness", command = wordcloud_sadness)
             btn_wordcloud_sadness.pack()
+            btn_wordcloud_sadness.configure(bg='#800080')
             
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
+            btn_wordcloud_surprise.configure(bg='#40E0D0')
             
             
         def wordcloud_surprise():
@@ -450,30 +467,40 @@ def button_db():
             
             btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
             btn_wordcloud_joy.pack()
+            btn_wordcloud_joy.configure(bg='#FFFF00')
             
             btn_wordcloud_disappointment = tk.Button(fenetre, text = "Wordcloud disappointment", command = wordcloud_disappointment)
             btn_wordcloud_disappointment.pack()
+            btn_wordcloud_disappointment.configure(bg='#D3D3D3')
             
-            btn_wordcloud_sadness = tk.B
+            btn_wordcloud_sadness = tk.Button(fenetre, text = "Wordcloud sadness", command = wordcloud_sadness)
+            btn_wordcloud_sadness.pack()
+            btn_wordcloud_sadness.configure(bg='#800080')
             
-            btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
-            btn_wordcloud_surprise.pack()
+            btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
+            btn_wordcloud_anger.pack()
+            btn_wordcloud_anger.configure(bg='#FF0000')
     
         
         btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
         btn_wordcloud_joy.pack()
+        btn_wordcloud_joy.configure(bg='#FFFF00')
         
         btn_wordcloud_disappointment = tk.Button(fenetre, text = "Wordcloud disappointment", command = wordcloud_disappointment)
         btn_wordcloud_disappointment.pack()
+        btn_wordcloud_disappointment.configure(bg='#D3D3D3')
         
         btn_wordcloud_sadness = tk.Button(fenetre, text = "Wordcloud sadness", command = wordcloud_sadness)
         btn_wordcloud_sadness.pack()
+        btn_wordcloud_sadness.configure(bg='#800080')
         
         btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
         btn_wordcloud_anger.pack()
+        btn_wordcloud_anger.configure(bg='#FF0000')
         
         btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
         btn_wordcloud_surprise.pack()
+        btn_wordcloud_surprise.configure(bg='#40E0D0')
         
         
     
@@ -547,6 +574,7 @@ texte.pack()
 
 bouton_db = tk.Button(fenetre, text="From database", command = button_db)
 bouton_db.pack()
+
 
 bouton_text = tk.Button(fenetre, text="From text", command = button_text)
 bouton_text.pack()
