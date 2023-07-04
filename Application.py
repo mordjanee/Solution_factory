@@ -100,6 +100,11 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pandas as pd
+from matplotlib.figure import Figure
+
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
 
 fenetre = tk.Tk()
 fenetre.title("EFREIMOTION")
@@ -107,11 +112,28 @@ fenetre.geometry("500x400")
 
 bdd = tk.Entry(fenetre)
 bdd.insert(0, "Database name's")
-bdd.pack()
+bdd.grid(row=0, column=0)
 
 zone_analyse = tk.Entry(fenetre)
 zone_analyse.insert(0, "Comment place's")
-zone_analyse.pack()
+zone_analyse.grid(row=1, column=0)
+
+                                            
+determiners = ['the', 'a', 'an', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'each', 'every', 'either', 'neither', 'both', 'another', 'any', 'some', 'several', 'few', 'many', 'much', 'most', 'all', 'enough', 'no', 'any', 'other', 'such', 'what', 'which', 'whichever', 'whose', 'rather', 'quite', 'somebody', 'nobody', 'everyone', 'anyone', 'somebody', 'nobody', 'everyone', 'anyone', 'something', 'nothing', 'everything', 'anything', 'someone', 'no one', 'everyone', 'anyone', 'somewhere', 'nowhere', 'everywhere', 'anywhere', 'either', 'neither', 'both', 'half', 'several', 'few', 'many', 'much', 'most', 'all', 'enough', 'no', 'any', 'other', 'another', 'such', 'what', 'rather', 'quite', 'that', 'those', 'these', 'this', 'the', 'a', 'an']
+
+pronouns = ['i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'you', 'him', 'her', 'us', 'them', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves', 'mine', 'yours', 'his', 'hers', 'its', 'ours', 'theirs', 'this', 'that', 'these', 'those', 'who', 'whom', 'whose', 'which', 'what', 'whatever', 'whoever', 'whichever', 'whomever', 'anyone', 'everyone', 'someone', 'no one', 'anybody', 'everybody', 'somebody', 'nobody', 'anywhere', 'everywhere', 'somewhere', 'nowhere', 'anything', 'everything', 'something', 'nothing', 'any', 'each', 'every', 'either', 'neither', 'both', 'one', 'another', 'such', 'other', 'anybody', 'everybody', 'somebody', 'nobody', 'anyone', 'everyone', 'someone', 'no one', 'anywhere', 'everywhere', 'somewhere', 'nowhere', 'anything', 'everything', 'something', 'nothing', 'any', 'each', 'every', 'either', 'neither', 'both', 'one', 'another', 'some', 'several', 'few', 'many', 'much', 'most', 'all', 'enough']
+
+adjectives = ['good', 'new', 'first', 'last', 'long', 'great', 'little', 'own', 'other', 'old', 'right', 'big', 'high', 'different', 'small', 'large', 'next', 'early', 'young', 'important', 'few', 'public', 'bad', 'same', 'able', 'better', 'best', 'high', 'low', 'early', 'late', 'early', 'late', 'early', 'late', 'early', 'late', 'early', 'late', 'high', 'low', 'early', 'late', 'high', 'low', 'early', 'late', 'early', 'late', 'early', 'late', 'early', 'late', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new', 'young', 'old', 'new']
+
+prepositions = ['about', 'above', 'across', 'after', 'not', 'so', 'too', 'or', 'and', 'against', 'along', 'among', 'around', 'as', 'at', 'before', 'behind', 'below', 'beneath', 'beside', 'between', 'beyond', 'by', 'concerning', 'considering', 'despite', 'down', 'during', 'except', 'for', 'from', 'in', 'inside', 'into', 'like', 'near', 'of', 'off', 'on', 'onto', 'out', 'outside', 'over', 'past', 'regarding', 'round', 'since', 'through', 'throughout', 'to', 'toward', 'under', 'underneath', 'until', 'up', 'upon', 'with', 'within', 'without']
+
+verbs = ['be', 'have', 'do', 'go', 'say', 'see', 'get', 'make', 'know', 'think', 'take', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'call', 'try', 'feel', 'become', 'leave', 'put', 'mean', 'keep', 'let', 'begin', 'seem', 'show', 'hear', 'follow', 'help', 'play', 'stop', 'talk', 'turn', 'start', 'bring', 'write', 'provide', 'sit', 'stand', 'lose', 'pay', 'meet', 'include']
+
+def supprimer_mots(texte, dictionnaire):
+    mots = texte.split()
+    mots_filtres = [mot for mot in mots if mot not in dictionnaire]
+    texte_filtre = ' '.join(mots_filtres)
+    return texte_filtre
 
     
 def recuperer_texte():  #Fonction qui se lance quand le bouton est cliqué
@@ -167,15 +189,149 @@ def recuperer_texte():  #Fonction qui se lance quand le bouton est cliqué
     figure = plt.figure(figsize=(4, 4))
     graphique = figure.add_subplot(111)
     graphique.pie(pourcentages, labels=categories, autopct='%1.1f%%')
+    graphique.set_title('Graphique des pourcentages de chaque sentiment')
 
     # Création du canevas Tkinter pour afficher le graphique
     canvas = FigureCanvasTkAgg(figure, master=fenetre)
     canvas.draw()
-    canvas.get_tk_widget().pack()
-        
+    canvas.get_tk_widget().grid(row=0, column=0)
+    
+    
+    # Création de la figure n°2
+    figure2 = plt.figure(figsize=(4, 4))
+    graphique2 = figure2.add_subplot(111)
+    graphique2.bar(categories, pourcentages)
+    
+    # Personnalisation des axes et du titre si nécessaire
+    graphique2.set_xlabel('Catégories')
+    graphique2.set_ylabel('Pourcentages')
+    graphique2.set_title('Graphique en bâton')
+    
+    canvas6 = FigureCanvasTkAgg(figure2, master=fenetre)
+    canvas6.draw()
+    canvas6.get_tk_widget().grid(row=0, column=1)
+    
+    conc_joy = "joy"
+    conc_disappointment = "disappointment"
+    conc_sadness = "sadness"
+    conc_anger = "anger"
+    conc_surprise = "surprise"
+    
+    for i in range(len(df)) : 
+        if df.loc[i, "prediction_joy"] > df.loc[i, "prediction_disappointment"] and df.loc[i, "prediction_joy"] > df.loc[i, "prediction_sadness"] and df.loc[i, "prediction_joy"] > df.loc[i, "prediction_anger"] and df.loc[i, "prediction_joy"] > df.loc[i, "prediction_surprise"] :
+            conc_joy =conc_joy + " " + str(df.loc[i, zone_commentaire])
+            
+        if df.loc[i, "prediction_disappointment"] > df.loc[i, "prediction_joy"] and df.loc[i, "prediction_disappointment"] > df.loc[i, "prediction_sadness"] and df.loc[i, "prediction_disappointment"] > df.loc[i, "prediction_anger"] and df.loc[i, "prediction_disappointment"] > df.loc[i, "prediction_surprise"] :
+            conc_disappointment = conc_disappointment + " " + str(df.loc[i, zone_commentaire])
+            
+        if df.loc[i, "prediction_sadness"] > df.loc[i, "prediction_disappointment"] and df.loc[i, "prediction_sadness"] > df.loc[i, "prediction_joy"] and df.loc[i, "prediction_sadness"] > df.loc[i, "prediction_anger"] and df.loc[i, "prediction_sadness"] > df.loc[i, "prediction_surprise"] :
+            conc_sadness = conc_sadness + " " + str(df.loc[i, zone_commentaire])
+            
+        if df.loc[i, "prediction_anger"] > df.loc[i, "prediction_disappointment"] and df.loc[i, "prediction_anger"] > df.loc[i, "prediction_sadness"] and df.loc[i, "prediction_anger"] > df.loc[i, "prediction_joy"] and df.loc[i, "prediction_anger"] > df.loc[i, "prediction_surprise"] :
+            conc_anger = conc_anger + " " + str(df.loc[i, zone_commentaire])
+            
+        if df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_disappointment"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_sadness"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_anger"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_joy"] :
+            conc_surprise = conc_surprise + " " + str(df.loc[i, zone_commentaire])
+    
+    print(conc_surprise)
+    print("\n")
+
+    
+    conc_joy.replace("[^\w\s]", "")
+    conc_joy.lower()
+    conc_joy = supprimer_mots(conc_joy, determiners)
+    conc_joy = supprimer_mots(conc_joy, pronouns)
+    conc_joy = supprimer_mots(conc_joy, adjectives)
+    conc_joy = supprimer_mots(conc_joy, prepositions)
+    conc_joy = supprimer_mots(conc_joy, verbs)
+    
+    conc_disappointment.replace("[^\w\s]", "")
+    conc_disappointment.lower()
+    conc_disappointment = supprimer_mots(conc_disappointment, determiners)
+    conc_disappointment = supprimer_mots(conc_disappointment, pronouns)
+    conc_disappointment = supprimer_mots(conc_disappointment, adjectives)
+    conc_disappointment = supprimer_mots(conc_disappointment, prepositions)
+    conc_disappointment = supprimer_mots(conc_disappointment, verbs)
+    
+    conc_sadness.replace("[^\w\s]", "")
+    conc_sadness.lower()
+    conc_sadness = supprimer_mots(conc_sadness, determiners)
+    conc_sadness = supprimer_mots(conc_sadness, pronouns)
+    conc_sadness = supprimer_mots(conc_sadness, adjectives)
+    conc_sadness = supprimer_mots(conc_sadness, prepositions)
+    conc_sadness = supprimer_mots(conc_sadness, verbs)
+    
+    conc_anger.replace("[^\w\s]", "")
+    conc_anger.lower()
+    conc_anger = supprimer_mots(conc_anger, determiners)
+    conc_anger = supprimer_mots(conc_anger, pronouns)
+    conc_anger = supprimer_mots(conc_anger, adjectives)
+    conc_anger = supprimer_mots(conc_anger, prepositions)
+    conc_anger = supprimer_mots(conc_anger, verbs)
+    
+    conc_surprise.replace("[^\w\s]", "")
+    conc_surprise.lower()
+    conc_surprise = supprimer_mots(conc_surprise, determiners)
+    conc_surprise = supprimer_mots(conc_surprise, pronouns)
+    conc_surprise = supprimer_mots(conc_surprise, adjectives)
+    conc_surprise = supprimer_mots(conc_surprise, prepositions)
+    conc_surprise = supprimer_mots(conc_surprise, verbs)
+    
+    
+    wordcloud_joy = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(conc_joy)
+    # Affichage du nuage de mots
+    
+    figure = Figure(figsize=(10, 5))
+    ax = figure.add_subplot(111)
+    ax.imshow(wordcloud_joy, interpolation='bilinear')
+    ax.axis('off')
+    canvas1 = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas1.draw()
+    canvas1.get_tk_widget().grid(row=0, column=2)
+    
+    wordcloud_disappointment = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(conc_disappointment)
+    # Affichage du nuage de mots
+    figure = Figure(figsize=(10, 5))
+    ax = figure.add_subplot(111)
+    ax.imshow(wordcloud_disappointment, interpolation='bilinear')
+    ax.axis('off')
+    canvas2 = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas2.draw()
+    canvas2.get_tk_widget().grid(row=0, column=3)
+    
+    wordcloud_sadness = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(conc_sadness)
+    # Affichage du nuage de mots
+    figure = Figure(figsize=(10, 5))
+    ax = figure.add_subplot(111)
+    ax.imshow(wordcloud_sadness, interpolation='bilinear')
+    ax.axis('off')
+    canvas3 = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas3.draw()
+    canvas3.get_tk_widget().grid(row=1, column=0)
+    
+    wordcloud_anger = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(conc_anger)
+    # Affichage du nuage de mots
+    figure = Figure(figsize=(10, 5))
+    ax = figure.add_subplot(111)
+    ax.imshow(wordcloud_anger, interpolation='bilinear')
+    ax.axis('off')
+    canvas4 = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas4.draw()
+    canvas4.get_tk_widget().grid(row=1, column=2)
+    
+    wordcloud_surprise = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(conc_surprise)
+    # Affichage du nuage de mots
+    figure = Figure(figsize=(10, 5))
+    ax = figure.add_subplot(111)
+    ax.imshow(wordcloud_surprise, interpolation='bilinear')
+    ax.axis('off')
+    canvas5 = FigureCanvasTkAgg(figure, master=fenetre)
+    canvas5.draw()
+    canvas5.get_tk_widget().grid(row=1, column=3)  
+    
     
 bouton = tk.Button(fenetre, text="Select this file", command=recuperer_texte)
-bouton.pack()
+bouton.grid(row=2, column=0)
 
 fenetre.mainloop()
 
