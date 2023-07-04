@@ -150,22 +150,7 @@ bouton.pack()
 
 fenetre.mainloop()
 
-#%%
 
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-
-# Votre texte
-texte = "Votre texte ici ici ici texte"
-
-# Création d'un objet WordCloud avec la taille des mots basée sur leur fréquence
-wordcloud = WordCloud(width=800, height=400, background_color="white", relative_scaling=0.5).generate(texte)
-
-# Affichage du nuage de mots
-plt.figure(figsize=(10, 5))
-plt.imshow(wordcloud, interpolation='bilinear')
-plt.axis('off')
-plt.show()
 
 
 
