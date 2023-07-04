@@ -184,7 +184,6 @@ def button_db():
         file = os.path.join(dossier, file)
         
         df = pd.read_csv(file, delimiter=";", on_bad_lines= "skip")
-        df = df[:100]
         zone_commentaire = zone_analyse.get()
         
         for widget in fenetre.winfo_children():
