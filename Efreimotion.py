@@ -277,8 +277,6 @@ def button_db():
             if df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_disappointment"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_sadness"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_anger"] and df.loc[i, "prediction_surprise"] > df.loc[i, "prediction_joy"] :
                 conc_surprise = conc_surprise + " " + str(df.loc[i, zone_commentaire])
         
-        print(conc_surprise)
-        print("\n")
 
         
         conc_joy.replace("[^\w\s]", "")
@@ -353,6 +351,9 @@ def button_db():
             btn_wordcloud_surprise.pack()
             btn_wordcloud_surprise.configure(bg='#40E0D0')
             
+            bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+            bouton_menu.pack()
+            
         def wordcloud_disappointment():
             
             for widget in fenetre.winfo_children():
@@ -383,6 +384,9 @@ def button_db():
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
             btn_wordcloud_surprise.configure(bg='#40E0D0')
+            
+            bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+            bouton_menu.pack()
         
         
         
@@ -416,6 +420,9 @@ def button_db():
             btn_wordcloud_surprise = tk.Button(fenetre, text = "Wordcloud surprise", command = wordcloud_surprise)
             btn_wordcloud_surprise.pack()
             btn_wordcloud_surprise.configure(bg='#40E0D0')
+            
+            bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+            bouton_menu.pack()
         
         
         def wordcloud_anger():
@@ -449,6 +456,9 @@ def button_db():
             btn_wordcloud_surprise.pack()
             btn_wordcloud_surprise.configure(bg='#40E0D0')
             
+            bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+            bouton_menu.pack()
+            
             
         def wordcloud_surprise():
             
@@ -480,6 +490,9 @@ def button_db():
             btn_wordcloud_anger = tk.Button(fenetre, text = "Wordcloud anger", command = wordcloud_anger)
             btn_wordcloud_anger.pack()
             btn_wordcloud_anger.configure(bg='#FF0000')
+            
+            bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+            bouton_menu.pack()
     
         
         btn_wordcloud_joy = tk.Button(fenetre, text = "Wordcloud joy", command = wordcloud_joy)
@@ -502,6 +515,9 @@ def button_db():
         btn_wordcloud_surprise.pack()
         btn_wordcloud_surprise.configure(bg='#40E0D0')
         
+        bouton_menu = tk.Button(fenetre, text = "Menu", command = menu)
+        bouton_menu.pack()
+        
         
     
     bouton_analyse = tk.Button(fenetre, text="Select this file", command = recuperer_db)
@@ -520,7 +536,6 @@ def button_text():
         
     def recuperer_texte():  #Fonction qui se lance quand le bouton est cliqué
         texte = zone_texte.get("1.0", tk.END)
-        print(texte)
         prediction_joy, prediction_disappointment, prediction_sadness, prediction_anger, prediction_surprise = fonction_test(texte)
 
         categories = ['Joy', 'Disappointment', 'Sadness', 'Anger', 'Surprise']
