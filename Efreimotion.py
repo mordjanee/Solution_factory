@@ -572,6 +572,7 @@ image = os.path.join(os.path.dirname(__file__), "ml.png")
 fenetre = tk.Tk()
 fenetre.title("EFREIMOTION")
 fenetre.geometry("800x800")
+fenetre.iconphoto(False, tk.PhotoImage(file=image))
 
 texte = Label(fenetre, text="\nWelcome to the EFREMOTION app\n")
 texte.pack()
