@@ -8,7 +8,7 @@ Afin d'utiliser notre programme, il faut télécharger le fichier Efreimotion.py
 ainsi que le fichier Listes qui contient les listes de mot utilisé pour le traitement des données en one hot encoding
 et enfin le fichier Modèles qu'il faudra décompresser et qui contient les modèles de Machine Learning entraînés.
 
-Il faudra donc placer ses dossiers et le fichier python dans un même dossier avec l'image ml.png et la base de données BDD_Amazon.csv pour réaliser des tests (où n'importe quelle autre base de données).
+Il faudra donc placer ses dossiers et le fichier python dans un même dossier avec l'image ml.png et la base de données test.csv pour réaliser des tests (où n'importe quelle autre base de données).
 
 Le site internet se trouve dans le fichier site-mastercamp
 
