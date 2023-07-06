@@ -2281,3 +2281,62 @@ button,
   margin-top: 10%;
   margin-left: 45%;
 }
+#dld{
+  width: 15%;
+  text-decoration: none;
+}
+#s-dld{
+  border-bottom: dotted 0px;
+}
+.tdld{
+  font-size: 200%;
+  text-decoration: none;
+  margin-left: -1.5%;
+}
+.tdld b{
+  color: #2596be;
+}
+
+.arrow-container {
+  position: relative;
+  display: inline-block;
+}
+
+.arrow {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  margin-left: 15%;
+  margin-top: 2%;
+  animation: arrowAnimation 5s infinite;
+}
+
+.arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #f56a6a;
+}
+
+.arrow::after {
+  content: "Clic";
+  position: absolute;
+  top: 50%;
+  left: 50px;
+  transform: translate(-50%, -50%);
+  color: #f56a6a;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@keyframes arrowAnimation {
+  0% { opacity: 0; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(-10px); }
+  100% { opacity: 0; transform: translateX(0); }
+}
